@@ -95,6 +95,42 @@ uploaded_file = st.sidebar.file_uploader(
 )
 
 st.sidebar.markdown("---")
+
+# Download sample test CSV so users always have a ready-to-use file
+st.sidebar.subheader("Sample Test Data")
+st.sidebar.write(
+    "Don't have a test file? Download a sample CSV with 50 rows "
+    "(10 per class) pre-formatted for this app."
+)
+
+SAMPLE_CSV = (
+    "school,sex,address,famsize,Pstatus,Mjob,Fjob,reason,guardian,"
+    "schoolsup,famsup,paid,activities,nursery,higher,internet,romantic,"
+    "age,Medu,Fedu,traveltime,studytime,failures,famrel,freetime,goout,"
+    "Dalc,Walc,health,absences,performance_level\n"
+    "GP,F,U,GT3,T,health,services,course,mother,no,no,no,yes,yes,no,no,yes,22,3,4,1,1,3,2,4,1,1,3,3,9,0\n"
+    "GP,M,U,GT3,T,services,at_home,course,other,no,no,yes,yes,yes,no,no,no,16,0,1,1,1,3,5,4,5,4,3,3,13,0\n"
+    "GP,M,U,LE3,T,health,at_home,reputation,mother,no,yes,no,no,no,no,yes,no,18,0,4,1,1,3,2,2,1,4,4,4,12,0\n"
+    "GP,F,U,GT3,T,other,services,home,mother,yes,yes,no,yes,yes,no,no,no,17,1,1,2,2,2,3,3,3,2,2,3,8,1\n"
+    "MS,M,R,LE3,A,at_home,other,course,father,no,no,yes,no,yes,yes,yes,yes,16,2,2,1,2,1,4,3,2,1,2,4,5,1\n"
+    "GP,F,U,GT3,T,teacher,services,reputation,mother,no,yes,yes,yes,yes,yes,yes,no,17,3,2,2,2,0,4,2,3,2,3,3,3,2\n"
+    "GP,M,U,LE3,T,services,other,course,mother,no,no,no,yes,yes,yes,yes,no,16,2,3,1,3,0,3,4,2,2,2,5,2,2\n"
+    "MS,F,R,GT3,T,health,teacher,home,mother,no,yes,no,no,yes,yes,yes,yes,17,4,3,2,3,0,5,3,2,1,1,4,0,3\n"
+    "GP,M,U,GT3,T,other,services,reputation,father,no,yes,yes,yes,yes,yes,yes,no,16,3,4,1,3,0,4,2,3,2,2,3,2,3\n"
+    "GP,F,U,LE3,T,teacher,teacher,course,mother,no,no,yes,yes,yes,yes,yes,no,17,4,4,1,4,0,5,2,1,1,1,5,0,4\n"
+    "GP,M,U,GT3,T,health,health,reputation,mother,no,yes,yes,no,yes,yes,yes,no,16,4,4,1,4,0,5,3,2,1,1,4,1,4\n"
+)
+
+st.sidebar.download_button(
+    label="Download Sample Test CSV",
+    data=SAMPLE_CSV,
+    file_name="student_test_sample.csv",
+    mime="text/csv",
+    use_container_width=True,
+    help="Download this file, then upload it above to test the CSV upload feature."
+)
+
+st.sidebar.markdown("---")
 run_button = st.sidebar.button("Run Models", use_container_width=True)
 
 # ------------------------------------------------------------
@@ -257,6 +293,15 @@ if run_button:
         rows.append(m)
     results_df = pd.DataFrame(rows).set_index("Model")
     st.dataframe(results_df.round(4), use_container_width=True)
+
+    # Download button — export the comparison table as CSV
+    st.download_button(
+        label="Download Results as CSV",
+        data=results_df.round(4).to_csv(),
+        file_name="model_comparison_results.csv",
+        mime="text/csv",
+        help="Download the model comparison metrics table as a CSV file."
+    )
     st.markdown("---")
 
     # Per-model detailed results — metrics, confusion matrix, classification report
